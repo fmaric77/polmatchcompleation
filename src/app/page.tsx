@@ -1,4 +1,4 @@
-import { ProgressBar, STAGES, StageCompletionDetail } from "../ProgressBar";
+import { ProgressBar, StageCompletionDetail } from "../ProgressBar";
 import "./globals.css";
 
 // Helper function to calculate average time between deliverables
