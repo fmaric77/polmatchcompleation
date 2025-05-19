@@ -90,7 +90,7 @@ export default function Home() {
         </div>
       </main>
       <footer className="mt-16 mb-4 text-[rgb(var(--muted-foreground-rgb))] text-sm text-center animate-fade-in delay-300">
-        &copy; {new Date().getFullYear()} Polmatch Progress. Crafted with care.
+        &copy; {new Date().getFullYear()} Moše Abramović. Crafted with care.
       </footer>
     </div>
   );
