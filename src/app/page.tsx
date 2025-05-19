@@ -1,102 +1,96 @@
-import Image from "next/image";
+import { ProgressBar, STAGES, StageCompletionDetail } from "../ProgressBar";
+import "./globals.css";
+
+// Helper function to calculate average time between deliverables
+const calculateAverageTimeBetweenDeliverables = (details: StageCompletionDetail[]): string => {
+  const completedWithDates = details.filter(d => d.completionDate);
+  if (completedWithDates.length < 2) {
+    return "N/A (need at least 2 completed stages with dates)";
+  }
+
+  // Sort by completion date to calculate time differences between consecutive stages
+  const sortedDetails = [...completedWithDates].sort((a, b) => 
+    new Date(a.completionDate!).getTime() - new Date(b.completionDate!).getTime()
+  );
+
+  let totalDaysBetween = 0;
+  if (sortedDetails.length > 1) {
+    const firstDate = new Date(sortedDetails[0].completionDate!).getTime();
+    const lastDate = new Date(sortedDetails[sortedDetails.length - 1].completionDate!).getTime();
+    totalDaysBetween = (lastDate - firstDate) / (1000 * 60 * 60 * 24);
+  }
+  
+  const averageDaysBetween = totalDaysBetween / (sortedDetails.length -1) ; // Average time *between* deliverables
+
+  return averageDaysBetween > 0 ? `${averageDaysBetween.toFixed(1)} days` : "N/A";
+};
+
+// New helper function to calculate average time to completion from project start
+const PROJECT_START_DATE = "2025-05-19"; // Define your project start date here
+
+const calculateAverageTimeToCompletionFromStart = (details: StageCompletionDetail[], projectStartDateString: string): string => {
+  const completedWithDates = details.filter(d => d.completionDate);
+  if (completedWithDates.length === 0) {
+    return "N/A (no completed stages with dates)";
+  }
+
+  const projectStartDate = new Date(projectStartDateString).getTime();
+  let totalDaysFromStartSum = 0;
+
+  completedWithDates.forEach(detail => {
+    const completionDate = new Date(detail.completionDate!).getTime();
+    const daysFromStart = (completionDate - projectStartDate) / (1000 * 60 * 60 * 24);
+    if (daysFromStart >= 0) { // Ensure completion date is after project start
+      totalDaysFromStartSum += daysFromStart;
+    }
+  });
+
+  if (completedWithDates.length === 0) return "N/A"; // Should be caught earlier, but good for safety
+
+  const averageDaysFromStart = totalDaysFromStartSum / completedWithDates.length;
+
+  return averageDaysFromStart >= 0 ? `${averageDaysFromStart.toFixed(1)} days` : "N/A";
+};
+
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  // List the keys and completion dates of features here
+  // Dates should be in "YYYY-MM-DD" format
+  const stageCompletionDetails: StageCompletionDetail[] = [
+    { key: "users" },
+    { key: "profile_basic" },
+    { key: "groups" }, 
+    { key: "private_messages" },
+    { key: "jobs" },
+    { key: "admin_actions" },
+    { key: "user_notifications" },
+    // Add or update stages with their completion dates
+  ];
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const averageTimeBetween = calculateAverageTimeBetweenDeliverables(stageCompletionDetails);
+  const averageTimeFromStart = calculateAverageTimeToCompletionFromStart(stageCompletionDetails, PROJECT_START_DATE);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-[rgb(var(--background-start-rgb))] to-[rgb(var(--background-end-rgb))] text-[rgb(var(--foreground-rgb))] flex flex-col items-center justify-center p-4 sm:p-8 selection:bg-[rgb(var(--primary-accent-rgb))] selection:text-[rgb(var(--primary-accent-text-rgb))]">
+      <main className="flex flex-col gap-10 w-full max-w-5xl items-center">
+        <div className="text-center mb-6 animate-fade-in">
+          <h1 className="text-5xl sm:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gray-100 via-gray-300 to-gray-500 drop-shadow-lg mb-3">
+            Polmatch Platform Progress
+          </h1>
+          <p className="text-xl sm:text-2xl text-[rgb(var(--muted-foreground-rgb))] max-w-3xl">
+            Visualizing the journey to a fully-featured social platform. Each milestone represents a core component of Polmatch.
+          </p>
+        </div>
+        <ProgressBar stageDetails={stageCompletionDetails} />
+        <div className="mt-4 text-center text-lg text-[rgb(var(--muted-foreground-rgb))] animate-fade-in delay-200">
+          Average time between deliverables: <span className="font-semibold text-[rgb(var(--foreground-rgb))]">{averageTimeBetween}</span>
+        </div>
+        <div className="mt-2 text-center text-lg text-[rgb(var(--muted-foreground-rgb))] animate-fade-in delay-300">
+          Average time to complete (from project start): <span className="font-semibold text-[rgb(var(--foreground-rgb))]">{averageTimeFromStart}</span>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      <footer className="mt-16 mb-4 text-[rgb(var(--muted-foreground-rgb))] text-sm text-center animate-fade-in delay-300">
+        &copy; {new Date().getFullYear()} Polmatch Progress. Crafted with care.
       </footer>
     </div>
   );

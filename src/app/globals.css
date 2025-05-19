@@ -19,8 +19,90 @@
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background-start-rgb: 10, 10, 10; /* Very dark grey / near black */
+    --background-end-rgb: 0, 0, 0; /* Black */
+    --foreground-rgb: 229, 229, 229; /* Light grey for text */
+    --muted-foreground-rgb: 160, 160, 160; /* Medium grey for less important text */
+    --border-rgb: 50, 50, 50; /* Dark grey for borders */
+    --card-rgb: 20, 20, 20; /* Slightly lighter black for cards/containers */
+    --primary-accent-rgb: 200, 200, 200; /* Light grey for primary accents (e.g., progress fill) */
+    --primary-accent-text-rgb: 10, 10, 10; /* Dark text for on-accent elements */
+  }
 }
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom right,
+      rgb(var(--background-start-rgb)),
+      rgb(var(--background-end-rgb))
+    );
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  }
+  .animate-slide-up {
+    animation: slideUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  }
+  .delay-100 { animation-delay: 0.1s; }
+  .delay-200 { animation-delay: 0.2s; }
+  .delay-300 { animation-delay: 0.3s; }
+  .delay-500 { animation-delay: 0.5s; }
+
+  /* Custom scrollbar for B&W theme */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--border-rgb)) rgb(var(--card-rgb));
+  }
+  .scrollbar-thumb-custom::-webkit-scrollbar-thumb {
+    background-color: rgb(var(--border-rgb));
+    border-radius: 4px;
+  }
+  .scrollbar-track-custom::-webkit-scrollbar-track {
+    background-color: rgb(var(--card-rgb));
+  }
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Remove color-specific shimmer, or make it B&W if desired */
+/* For now, removing shimmer to simplify B&W theme */
+/*
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+.animate-shimmer {
+  animation: shimmer 20s linear infinite;
+  background-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 255, 255, 0.03) 20%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.03) 80%,
+    transparent 100%
+  );
+  background-size: 1000px 100%;
+}
+*/
