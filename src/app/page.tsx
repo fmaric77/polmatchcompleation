@@ -59,10 +59,10 @@ export default function Home() {
   const stageCompletionDetails: StageCompletionDetail[] = [
     { key: "users", completionDate: "2025-05-19" }, // Account creation done
     { key: "profile_basic" },
-    { key: "groups", completionDate: "2025-05-21" }, // Groups completed
+    { key: "groups", completionDate: "2025-05-23" }, // Groups completed
+    { key: "group_members", completionDate: "2025-05-23" }, // Group membership completed
+    { key: "group_invitations", completionDate: "2025-05-23" }, // Group invitations completed
     { key: "private_messages", completionDate: "2025-05-22" }, // Private messages completed
-    { key: "group_membership", completionDate: "2025-05-23" }, // Group membership completed
-    { key: "group_invitation", completionDate: "2025-05-23" }, // Group invitation completed
     { key: "group_messages", completionDate: "2025-05-23" }, // Group messages completed
     { key: "jobs" },
     { key: "admin_actions" },
