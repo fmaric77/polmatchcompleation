@@ -57,10 +57,10 @@ export default function Home() {
   // List the keys and completion dates of features here
   // Dates should be in "YYYY-MM-DD" format
   const stageCompletionDetails: StageCompletionDetail[] = [
-    { key: "users" },
+    { key: "users", completionDate: "2025-05-19" }, // Account creation done
     { key: "profile_basic" },
-    { key: "groups" }, 
-    { key: "private_messages" },
+    { key: "groups", completionDate: "2025-05-21" }, // Groups completed
+    { key: "private_messages", completionDate: "2025-05-22" }, // Private messages completed
     { key: "jobs" },
     { key: "admin_actions" },
     { key: "user_notifications" },
